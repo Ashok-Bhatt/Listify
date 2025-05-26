@@ -11,7 +11,7 @@ class FirebaseDatabase{
     }
 
     async createNewList(listName, headers){
-        const user = firebaseAuth.getCurrentUser();
+        const user = await firebaseAuth.getCurrentUser();
         try{
             await set(
                 ref(this.database, `${user.uid}/${listName}`), 
@@ -25,7 +25,7 @@ class FirebaseDatabase{
     }
 
     async getHeaders(listName){
-        const user = firebaseAuth.getCurrentUser();
+        const user = await firebaseAuth.getCurrentUser();
         try{
             const snapshot = await get(
                 ref(this.database, `${user.uid}/${listName}/Headers`),
@@ -42,7 +42,7 @@ class FirebaseDatabase{
     }
 
     async addNewItemToList(listName, listItem){
-        const user = firebaseAuth.getCurrentUser();
+        const user = await firebaseAuth.getCurrentUser();
         try{
             const headers = await this.getHeaders(listName);
 
@@ -56,7 +56,7 @@ class FirebaseDatabase{
     }
 
     async getLists(){
-        const user = firebaseAuth.getCurrentUser();
+        const user = await firebaseAuth.getCurrentUser();
         try{
             const snapshot = await get(
                 ref(this.database, `${user.uid}`),

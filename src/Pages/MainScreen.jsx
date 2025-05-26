@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { FaSquarePlus } from "react-icons/fa6";
 import AddList from '../Components/AddList.jsx';
 import ListItemsTable from '../Components/ListItemsTable.jsx';
 import firebaseAuth from '../Firebase/firebaseAuth.js';
 import firebaseDatabase from '../Firebase/firebaseDatabase.js';
+import UserContext from '../Contexts/UserContext.jsx';
 
 function MainScreen() {
 
@@ -11,12 +12,15 @@ function MainScreen() {
     const [userLists, setUserLists] = useState({});
     const [listDataNo, setListDataNo] = useState(-1);
 
+    const {setUser} = useContext(UserContext);
+
     function showAddListOption() {
         setAddListOption(true);
     }
 
     async function logout() {
         await firebaseAuth.logout();
+        setUser(null);
     }
 
     async function loadLists(){
@@ -30,6 +34,10 @@ function MainScreen() {
             setUserLists({});
         }
     }
+
+    useEffect(()=>{
+        loadLists();
+    }, []);
 
   return (
     <div className='flex flex-col h-screen w-screen'>

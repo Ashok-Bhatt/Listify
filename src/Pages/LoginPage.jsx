@@ -1,5 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import firebaseAuth from '../Firebase/firebaseAuth.js';
+import UserContext from '../Contexts/UserContext.jsx';
+import { Link } from 'react-router-dom';
 
 function LoginPage() {
 
@@ -7,9 +9,12 @@ function LoginPage() {
     const [password, setPassword] = useState("");
     const [errorText, setErrorText] = useState("");
 
+    const {user, setUser} = useContext(UserContext);
+
     async function login(){
         try{
             await firebaseAuth.login(email, password);
+            setUser(await firebaseAuth.getCurrentUser());
         } catch (error){
             setErrorText(error.message);
         }
@@ -34,13 +39,11 @@ function LoginPage() {
 
                 <div className='flex gap-x-2'>
                     <p>Don't have Account?</p>
-                    <a href="#" className='text-blue-900 underline'>Sign-Up</a>
+                    <Link to="/signup" className='text-blue-900 underline'>Sign Up</Link>
                 </div>
             </div>
         </div>
     )
 }
-
-
 
 export default LoginPage
