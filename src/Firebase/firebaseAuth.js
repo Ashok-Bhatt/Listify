@@ -19,9 +19,8 @@ class FirebaseAuth{
     async createAccount(email, password){
         try {
             await createUserWithEmailAndPassword(this.authApp, email, password);
-            console.log(`New account created`);
         } catch (error){
-            console.error(`Unable to create account: ${error.message}`);
+            throw Error("Unable to create account");
         }
     }
 
@@ -30,9 +29,8 @@ class FirebaseAuth{
     async login(email, password){
         try{
             await signInWithEmailAndPassword(this.authApp, email, password);
-            console.log('user logged in!');
         } catch (error){
-            console.error(`Logged In Failed: ${error.message}`);
+            throw Error("Unable to login");
         }
     }
 
@@ -41,9 +39,8 @@ class FirebaseAuth{
     async logout(){
         try{
             await signOut(this.authApp);
-            console.log("Successfully Logged Out!");
         } catch (error){
-            console.log(`Unable to logout: ${error.message}`);
+            throw Error("Unable to logout");
         }
     }
 
@@ -54,7 +51,7 @@ class FirebaseAuth{
         if (user){
             return user;
         } else {
-            console.log("no user logged in!");
+            return null;
         }
     }
 

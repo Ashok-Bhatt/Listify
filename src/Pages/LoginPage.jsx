@@ -1,73 +1,41 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import firebaseAuth from '../Firebase/firebaseAuth.js';
-import firebaseDatabase from '../Firebase/firebaseDatabase.js';
 
 function LoginPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    async function createAccount(){
-        try{
-            await firebaseAuth.createAccount(email, password);
-        } catch (error){
-            console.error(error);
-        }
-    }
-
-    async function userDetails(){
-        try{
-            firebaseAuth.getCurrentUser();
-        } catch (error){
-            console.error(error);
-        }
-    }
-
-    async function logout(){
-        try{
-            await firebaseAuth.logout();
-        } catch (error){
-            console.error(error);
-        }
-    }
+    const [errorText, setErrorText] = useState("");
 
     async function login(){
         try{
             await firebaseAuth.login(email, password);
         } catch (error){
-            console.error(error);
+            setErrorText(error.message);
         }
-    }
-
-    async function createList() {
-        await firebaseDatabase.createNewList("Companies", ["Company Name", "Difficulty Level", "Company Products"]);
-    }
-
-    async function addListItem() {
-        await firebaseDatabase.addNewItemToList("Companies", {
-            "Company Name" : "Microsoft",
-            "Difficulty Level": "Hard",
-            "Company Products" : "Bing, OpenAI",
-            "Trial" : "Hi",
-        })
     }
 
     return (
         <div className='flex h-screen w-screen'>
-            <div className='h-[600px] w-[400px] bg-blue-200 mx-auto m-auto rounded-2xl'>
-                <input type="email" value={email} className='bg-white border' onChange={(e)=>{
+            <div className='h-[400px] w-[400px] bg-blue-200 mx-auto m-auto rounded-2xl p-2 flex flex-col gap-5'>
+
+                <h2 className='text-center text-3xl'>Login</h2>
+
+                <input type="email" value={email} placeholder="Enter Email" className='bg-white border-b-2 h-10 rounded px-2 border-b-blue-500' onChange={(e)=>{
                     setEmail(e.target.value);
                 }}/>
-                <input type="password" value={password} className='bg-white border' onChange={(e)=>{
+                <input type="password" value={password} placeholder="Enter Password" className='bg-white border-b-2 h-10 rounded px-2 border-b-blue-500' onChange={(e)=>{
                     setPassword(e.target.value);
                 }}/>
 
-                <button onClick={createAccount} className='border'>Register</button>
-                <button onClick={userDetails} className='border'>Details</button>
-                <button onClick={logout} className='border'>Logout</button>
-                <button onClick={login} className='border'>Login</button>
-                <button onClick={createList} className='border'>Create List</button>
-                <button onClick={addListItem} className='border'>Add Item</button>
+                <button onClick={login} className='border bg-blue-600 text-white text-xl text-bold rounded-2xl p-2 w-1/3 mx-auto'>Login</button>
+
+                {(errorText) ? <p className='text-md text-red-500'>{errorText}</p> : null}
+
+                <div className='flex gap-x-2'>
+                    <p>Don't have Account?</p>
+                    <a href="#" className='text-blue-900 underline'>Sign-Up</a>
+                </div>
             </div>
         </div>
     )

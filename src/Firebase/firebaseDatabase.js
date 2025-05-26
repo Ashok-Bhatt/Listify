@@ -4,6 +4,7 @@ import firebaseAuth from "./firebaseAuth";
 class FirebaseDatabase{
 
     database;
+    user;
 
     constructor(){
         this.database = getDatabase();
@@ -18,9 +19,8 @@ class FirebaseDatabase{
                     Headers: headers.filter((data)=>data),
                 }
             )
-            console.log("List Created Successfully!");
         } catch (error){
-            console.log(`Couldn't create a new list! ${error}`);
+            throw Error("Unable to create new list");
         }
     }
 
@@ -37,21 +37,38 @@ class FirebaseDatabase{
                 return [];
             }
         } catch (error){
-            console.log(error);
+            throw Error("Unable to get headers");
         }
     }
 
     async addNewItemToList(listName, listItem){
+        const user = firebaseAuth.getCurrentUser();
         try{
             const headers = await this.getHeaders(listName);
 
             await push(
-                ref(this.database, `${firebaseAuth.getCurrentUser().uid}/${listName}/Data`),
+                ref(this.database, `${user.uid}/${listName}/Data`),
                 Object.fromEntries(Object.entries(listItem).filter(([item])=>headers.includes(item)))
             )
-            console.log("List Item Successfully Added to List");
         } catch (error){
-            console.log(`Couldn't add a new list item to list", ${error}`);
+            throw Error("Add new list item");
+        }
+    }
+
+    async getLists(){
+        const user = firebaseAuth.getCurrentUser();
+        try{
+            const snapshot = await get(
+                ref(this.database, `${user.uid}`),
+            )
+
+            if (snapshot.exists()){
+                return snapshot.val();
+            } else {
+                return [];
+            }
+        } catch (error){
+            throw Error("Cannot fetch user lists!");
         }
     }
 
