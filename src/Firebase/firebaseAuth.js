@@ -47,12 +47,7 @@ class FirebaseAuth{
 
     // Method to get current logged in user
     async getCurrentUser(){
-        const user = await this.authApp.currentUser;
-        if (user){
-            return user;
-        } else {
-            return null;
-        }
+        return this.authApp.currentUser || null;
     }
 
 }

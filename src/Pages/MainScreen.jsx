@@ -23,20 +23,20 @@ function MainScreen() {
         setUser(null);
     }
 
-    async function loadLists(){
-        try{
-            const lists = await firebaseDatabase.getLists()
-            setUserLists(lists);
-            if (Object.entries(lists).length > 0){
-                setListDataNo(0);
-            }
-        } catch (error){
-            setUserLists({});
-        }
-    }
-
     useEffect(()=>{
-        loadLists();
+        const fn = async() => {
+            try{
+                const lists = await firebaseDatabase.getLists()
+                setUserLists(lists);
+                if (Object.entries(lists).length > 0){
+                    setListDataNo(0);
+                }
+            } catch (error){
+                setUserLists({});
+            }
+        }
+
+        fn();
     }, []);
 
   return (
@@ -54,7 +54,6 @@ function MainScreen() {
             <div className='flex flex-col w-75 h-full border-r-2 border-gray-400'>
                 <div className='flex justify-between py-2 px-5 border-b'>
                     <div>My Lists</div>
-                    <button onClick={loadLists}>Show Lists</button>
                     <FaSquarePlus className='text-xl' onClick={showAddListOption}/>
                 </div>
                 <div className='flex flex-col overflow-x-hidden'>
@@ -67,7 +66,7 @@ function MainScreen() {
                 {(listDataNo !== -1) ? <ListItemsTable listInfo = {Object.entries(userLists)[listDataNo]}/> : null}
 
                 {/* Hidden AddList */}
-                {addListOption?(<AddList setAddListOption={setAddListOption}/>):null}
+                {addListOption?(<AddList setAddListOption={setAddListOption} listDataNo={listDataNo} setUserLists={setUserLists} setListDataNo={setListDataNo}/>):null}
             </div>
         </div>
     </div>

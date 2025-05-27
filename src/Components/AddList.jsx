@@ -4,7 +4,7 @@ import firebaseDatabase from '../Firebase/firebaseDatabase.js';
 
 function AddList(props) {
 
-    const {setAddListOption} = props;
+    const {setAddListOption, setUserLists, listDataNo, setListDataNo} = props;
 
     const [listName, setListName] = useState("");
     const [newHeader, setNewHeader] = useState("");
@@ -17,15 +17,27 @@ function AddList(props) {
         }
     }
 
-    const AddNewList = async () => {
-        console.log(listName);
-        console.log(headers);
+    const addNewList = async () => {
         try{
             await firebaseDatabase.createNewList(listName, headers);
             setAddListOption(false);
+            if (listDataNo == -1){
+                setListDataNo(0);
+            }
+            setUserLists((prev)=>{
+                prev[listName] = {
+                    Headers : headers,
+                };
+                console.log(prev)
+                return prev;
+            })
         } catch (error){
             throw Error("Couldn't create a new list!");
         }
+    }
+
+    const closeList = () => {
+        setAddListOption(false);
     }
 
   return (
@@ -40,7 +52,10 @@ function AddList(props) {
                 {headers.map((header, index)=><HeaderBlock title={header} index={index} headers={headers} setHeaders={setHeaders} key={Math.random()}/>)}
                 <input type="text" className='h-7 w-40 border-2 rounded p-2' value={newHeader} onChange={(e)=>setNewHeader(e.target.value)} onKeyDown={addHeader}/>
             </div>
-            <button className='bg-green-400 w-30 py-1 rounded-md hover:bg-green-300 text-xl' onClick={AddNewList}>Add List</button>
+            <div className='flex justify-between'>
+                <button className='bg-green-400 w-30 py-1 rounded-md hover:bg-green-300 text-xl' onClick={addNewList}>Add List</button>
+                <button className='bg-red-400 w-30 py-1 rounded-md hover:bg-red-300 text-xl' onClick={closeList}>Close</button>
+            </div>
         </div>
     </div>
   )
