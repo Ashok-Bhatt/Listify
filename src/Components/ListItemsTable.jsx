@@ -27,9 +27,7 @@ function ListItemsTable(props) {
                     {
                         headers.map((header)=>(
                             <td key={uuid()} className='text-center border-1 p-2'>{(Object.keys(row[1]).includes(header)) ? row[1][header] : null }</td>
-                        ))
-
-                        
+                        )) 
                     }
                 </tr>
             )) : null}

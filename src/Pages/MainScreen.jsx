@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { FaSquarePlus } from "react-icons/fa6";
+import { BsPlusCircleFill } from "react-icons/bs";
 import AddList from '../Components/AddList.jsx';
 import ListItemsTable from '../Components/ListItemsTable.jsx';
 import firebaseAuth from '../Firebase/firebaseAuth.js';
 import firebaseDatabase from '../Firebase/firebaseDatabase.js';
 import UserContext from '../Contexts/UserContext.jsx';
+import AddListItem from "../Components/AddListItem.jsx";
 
 function MainScreen() {
 
     const [addListOption, setAddListOption] = useState(false);
+    const [addListItemOption, setAddListItemOption] = useState(false);
     const [userLists, setUserLists] = useState({});
     const [listDataNo, setListDataNo] = useState(-1);
 
@@ -16,6 +19,10 @@ function MainScreen() {
 
     function showAddListOption() {
         setAddListOption(true);
+    }
+
+    function showAddListItemOption() {
+        setAddListItemOption(true);
     }
 
     async function logout() {
@@ -41,6 +48,8 @@ function MainScreen() {
 
   return (
     <div className='flex flex-col h-screen w-screen'>
+
+        {/* Navbar */}
         <nav className='bg-blue-600'>
             <div className='flex h-10 w-full px-10 items-center justify-between'>
                 <div>Listify Logo</div>
@@ -50,7 +59,10 @@ function MainScreen() {
                 </div>
             </div>
         </nav>
+
         <div className='flex h-full w-full'>
+
+            {/* Left Sidebar */}
             <div className='flex flex-col w-75 h-full border-r-2 border-gray-400'>
                 <div className='flex justify-between py-2 px-5 border-b'>
                     <div>My Lists</div>
@@ -62,11 +74,20 @@ function MainScreen() {
                     )}
                 </div>
             </div>
+
+            {/* Main Portion on Right that displays table  */}
             <div className='w-full h-full relative p-2'>
                 {(listDataNo !== -1) ? <ListItemsTable listInfo = {Object.entries(userLists)[listDataNo]}/> : null}
 
+                {/* Large Add Button at bottom right corner */}
+                <BsPlusCircleFill className='text-5xl absolute bottom-10 right-10' onClick={showAddListItemOption}/>
+
                 {/* Hidden AddList */}
                 {addListOption?(<AddList setAddListOption={setAddListOption} listDataNo={listDataNo} setUserLists={setUserLists} setListDataNo={setListDataNo}/>):null}
+
+                {/* Hidden AddListItem */}
+                {addListItemOption?(<AddListItem setAddListItemOption={setAddListItemOption} userLists={userLists} setUserLists={setUserLists} listDataNo={listDataNo}/>):null}
+
             </div>
         </div>
     </div>
