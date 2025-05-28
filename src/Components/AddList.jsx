@@ -40,7 +40,7 @@ function AddList(props) {
     }
 
   return (
-    <div className='flex flex-col w-[500px] h-[500px] absolute top-1/2 left-1/2 bg-white -translate-1/2 p-5 rounded-xl border-2'>
+    <div className='flex flex-col w-[500px] h-[500px] fixed top-1/2 left-1/2 bg-white -translate-1/2 p-5 rounded-xl border-2'>
 
         {/* List Name Field */}
         <div className='flex flex-col gap-y-2 border-b border-gray-400 pb-2'>

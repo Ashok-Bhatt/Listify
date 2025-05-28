@@ -1,4 +1,4 @@
-import {getDatabase, ref, set, push, onValue, get} from "firebase/database";
+import {getDatabase, ref, set, push, remove, get} from "firebase/database";
 import firebaseAuth from "./firebaseAuth";
 
 class FirebaseDatabase{
@@ -69,6 +69,19 @@ class FirebaseDatabase{
             }
         } catch (error){
             throw Error("Cannot fetch user lists!");
+        }
+    }
+
+    async deleteLists(lists){
+        const user = await firebaseAuth.getCurrentUser();
+        try{
+            for (let i=0; i<lists.length; i++){
+                await remove(
+                    ref(this.database, `${user.uid}/${lists[i]}`),
+                )
+            }
+        } catch (error){
+            throw Error("Couldn't delete lists");
         }
     }
 

@@ -16,18 +16,9 @@ function AddListItem(props) {
 
     const addNewListItem = async () => {
         
-        await firebaseDatabase.addNewItemToList(listName, newListItem);
+        await firebaseDatabase.addNewItemToList(listName, newListItem)
         setAddListItemOption(false);
-
-        const newList = {...userLists};
-        const uniqueId = uuid();
-
-        if (!newList[listName]["Data"]){
-            newList[listName]["Data"] = {};
-        }
-        
-        newList[listName]["Data"][uniqueId] = newListItem;
-        setUserLists(newList);
+        setUserLists(await firebaseDatabase.getLists());
         
     }
 
@@ -36,7 +27,7 @@ function AddListItem(props) {
     }
 
   return (
-    <div className='flex flex-col w-[500px] h-[500px] gap-y-2 absolute top-1/2 left-1/2 bg-white -translate-1/2 p-5 rounded-xl border-2'>
+    <div className='flex flex-col w-[500px] h-[500px] gap-y-2 fixed top-1/2 left-1/2 bg-white -translate-1/2 p-5 rounded-xl border-2'>
         
         <div className='flex flex-wrap gap-y-4 content-start overflow-y-auto w-full h-full'>
             {
@@ -51,7 +42,7 @@ function AddListItem(props) {
 
         {/* Add or Cancel Headers Button */}
         <div className='flex justify-between'>
-            <button className='bg-green-400 w-30 py-1 rounded-md hover:bg-green-300 text-xl' onClick={addNewListItem}>Add List</button>
+            <button className='bg-green-400 w-30 py-1 rounded-md hover:bg-green-300 text-xl' onClick={addNewListItem}>Add Item</button>
             <button className='bg-red-400 w-30 py-1 rounded-md hover:bg-red-300 text-xl' onClick={closeListItem}>Close</button>
         </div>
 
