@@ -16,7 +16,7 @@ function MainScreen() {
     // Variables for visibility of some components or some blocks
     const [addListOption, setAddListOption] = useState(false);
     const [addListItemOption, setAddListItemOption] = useState(false);
-    const [showConfirmDeleteBox, setShowConfirmDeleteBox] = useState(false);
+    const [showConfirmDeleteBox, setShowConfirmDeleteBox] = useState(false);                // Popup box to delete lists
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
     const [userLists, setUserLists] = useState({});
@@ -57,6 +57,7 @@ function MainScreen() {
             setUserLists(await firebaseDatabase.getLists());
             setDeleteList([]);
             setListDataNo(-1);
+            setShowDeleteButton(false);
         } catch (error){
             console.log(error);
         }
@@ -89,29 +90,31 @@ function MainScreen() {
 
         {/* Navbar */}
         <nav className='bg-blue-600'>
-            <div className='flex h-10 w-full px-10 items-center justify-between'>
-                <div>Listify Logo</div>
+            <div className='flex h-15 w-full px-10 items-center justify-between p-1'>
+                {/* Logo of the website */}
+                <div className='h-full'>
+                    <img src="images/listify_logo.png" alt="Logo of Listify" className='h-full' />
+                </div>
                 <div className='flex gap-10'>
-                    <input type="text" className='rounded-lg text-md px-2 w-75 h-7 bg-white text-right' placeholder='Search List Item'/>
-                    <button className='border-2 border-blue-600 font-bold px-3 hover:bg-blue-500 hover:rounded' onClick={logout}>Logout</button>
+                    <button className='border-2 border-blue-600 font-bold px-3 hover:bg-blue-500 hover:rounded hover:cursor-pointer' onClick={logout}>Logout</button>
                 </div>
             </div>
         </nav>
 
-        <div className='flex h-full w-full'>
+        <div className='flex w-full flex-grow'>
 
             {/* Left Sidebar */}
             <div className='flex flex-col w-75 h-full border-r-2 border-gray-400'>
                 <div className='flex justify-between py-2 px-5 border-b'>
                     <div className='underline decoration-double'>My Lists</div>
                     <div className='flex gap-x-1'>
-                        <MdDelete className={`text-red-600 text-xl ${(showDeleteButton)?'block':'hidden'}`} onClick={()=>{setShowConfirmDeleteBox(true)}}/>
+                        <MdDelete className={`text-red-600 text-xl ${(showDeleteButton)?'block':'hidden'}`} onClick={()=>{setShowConfirmDeleteBox(true)}} />
                         <FaSquarePlus className='text-xl' onClick={showAddListOption}/>
                     </div>
                 </div>
                 <div className='flex flex-col overflow-x-hidden'>
                     {Object.entries(userLists).map(
-                        (data, i)=>(<div className='flex justify-left items-center px-2 h-10 w-full overflow-x-hidden border-b-1' key={data}>
+                        (data, i)=>(<div className='flex justify-start items-center px-2 h-10 w-full overflow-x-hidden border-b-1' key={data}>
                             <div className='flex'><input type="checkbox" checked={(deleteList[i]?true:false)} onChange={()=>deleteListToggle(i)} className='h-5 w-5 hover:cursor-pointer'/></div>
                             <div className='w-full mx-2' onClick={()=>setListDataNo(i)}>{data[0]}</div>
                             <div className=''><MdModeEdit className='h-5 w-5 hover:cursor-pointer'/></div>
@@ -121,8 +124,8 @@ function MainScreen() {
             </div>
 
             {/* Main Portion on Right that displays table  */}
-            <div className='w-full h-full relative p-2 overflow-auto'>
-                {(listDataNo !== -1) ? <ListItemsTable listInfo = {Object.entries(userLists)[listDataNo]}/> : null}
+            <div className='w-full max-w-full h-full relative p-2 overflow-auto'>
+                {(listDataNo !== -1) ? <ListItemsTable listInfo = {Object.entries(userLists)[listDataNo]} setUserLists={setUserLists}/> : null}
 
                 {/* Large Add Button at bottom right corner */}
                 <BsPlusCircleFill className='text-5xl fixed bottom-10 right-10' onClick={showAddListItemOption}/>

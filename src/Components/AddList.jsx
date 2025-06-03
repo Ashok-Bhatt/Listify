@@ -12,24 +12,26 @@ function AddList(props) {
 
     const addHeader = (e) => {
         if (e.key == 'Enter'){
-            setHeaders((headers)=>[...headers, newHeader]);
-            setNewHeader("");
+            if (newHeader.trim() !== ""){
+                setHeaders((headers)=>[...headers, newHeader]);
+                setNewHeader("");
+            }
         }
     }
 
     const addNewList = async () => {
+
+        if (listName.trim()==="" || headers.length == 0){
+            throw Error("Both ListName and at least one header id mandatory");
+        }
+
         try{
             await firebaseDatabase.createNewList(listName, headers);
             setAddListOption(false);
             if (listDataNo == -1){
                 setListDataNo(0);
             }
-            setUserLists((prev)=>{
-                prev[listName] = {
-                    Headers : headers,
-                };
-                return prev;
-            })
+            setUserLists(await firebaseDatabase.getLists());
         } catch (error){
             throw Error("Couldn't create a new list!");
         }

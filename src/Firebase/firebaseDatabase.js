@@ -85,6 +85,19 @@ class FirebaseDatabase{
         }
     }
 
+    async deleteListItems(listName, listItems){
+        const user = await firebaseAuth.getCurrentUser();
+        try{
+            for (let i=0; i<listItems.length; i++){
+                await remove(
+                    ref(this.database, `${user.uid}/${listName}/Data/${listItems[i]}`),
+                )
+            }
+        } catch (error){
+            throw Error("Couldn't delete list items!");
+        }
+    }
+
 }
 
 const firebaseDatabase = new FirebaseDatabase();
