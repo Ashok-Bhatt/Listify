@@ -51,6 +51,7 @@ function ListItemsTable(props) {
   return (
     <div className='flex flex-col gap-y-2 h-full w-full'>
         <div className='flex gap-x-2'>
+            {/* Search Bar */}
             <input type="text" className='rounded-lg text-md px-2 w-75 h-7 bg-white text-right border-2' placeholder='Search List Item'/>
             <MdDelete className={`text-red-600 text-xl h-7 w-7 ${(showDeleteButton)?'block':'hidden'}`} onClick={()=>setShowConfirmDeleteItemsBox(true)}/>
         </div>

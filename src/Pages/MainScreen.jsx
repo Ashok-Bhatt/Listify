@@ -3,6 +3,7 @@ import { FaSquarePlus } from "react-icons/fa6";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { MdDone } from "react-icons/md";
 import AddList from '../Components/AddList.jsx';
 import ListItemsTable from '../Components/ListItemsTable.jsx';
 import firebaseAuth from '../Firebase/firebaseAuth.js';
@@ -21,7 +22,9 @@ function MainScreen() {
 
     const [userLists, setUserLists] = useState({});
     const [listDataNo, setListDataNo] = useState(-1);
+    const [updateDataNo, setUpdateDataNo] = useState(-1);
     const [deleteList, setDeleteList] = useState([]);
+    const [updatedValue, setUpdatedValue] = useState("");       // Temporarily stores the value of list name that is getting updated
 
     const {setUser} = useContext(UserContext);
 
@@ -68,6 +71,26 @@ function MainScreen() {
         setUser(null);
     }
 
+    async function updateListName(oldName){
+        try{
+            if (updatedValue.trim() === ""){
+                throw Error("Updated List Name should not be empty");
+            }
+
+            if (updatedValue == oldName){
+                setUpdateDataNo(-1);
+                setUpdatedValue("");
+                return;
+            }
+
+            await firebaseDatabase.updateListName(oldName, updatedValue);
+            setUpdateDataNo(-1);
+            setUserLists(await firebaseDatabase.getLists());
+        } catch (error){
+            console.log(error);
+        }
+    }
+
     useEffect(()=>{
         const fn = async() => {
             try{
@@ -105,6 +128,7 @@ function MainScreen() {
 
             {/* Left Sidebar */}
             <div className='flex flex-col w-75 h-full border-r-2 border-gray-400'>
+                {/* Header of Sidebar */}
                 <div className='flex justify-between py-2 px-5 border-b'>
                     <div className='underline decoration-double'>My Lists</div>
                     <div className='flex gap-x-1'>
@@ -112,12 +136,32 @@ function MainScreen() {
                         <FaSquarePlus className='text-xl' onClick={showAddListOption}/>
                     </div>
                 </div>
+
+                {/* Left Sidebar containing lists */}
                 <div className='flex flex-col overflow-x-hidden'>
                     {Object.entries(userLists).map(
-                        (data, i)=>(<div className='flex justify-start items-center px-2 h-10 w-full overflow-x-hidden border-b-1' key={data}>
-                            <div className='flex'><input type="checkbox" checked={(deleteList[i]?true:false)} onChange={()=>deleteListToggle(i)} className='h-5 w-5 hover:cursor-pointer'/></div>
-                            <div className='w-full mx-2' onClick={()=>setListDataNo(i)}>{data[0]}</div>
-                            <div className=''><MdModeEdit className='h-5 w-5 hover:cursor-pointer'/></div>
+                        (data, i)=>(
+                        <div className='flex justify-start items-center px-2 h-10 w-full overflow-x-hidden border-b-1' key={data}>
+                            <div className='flex'>
+                                <input type="checkbox" checked={(deleteList[i]?true:false)} onChange={()=>deleteListToggle(i)} className='h-5 w-5 hover:cursor-pointer'/>
+                            </div>
+                            {
+                                (i == updateDataNo) ? <input className='w-full mx-2 rounded-sm text-md px-2 h-7 bg-white border-2' value={updatedValue} onChange={(e)=>{
+                                    setUpdatedValue(e.target.value);
+                                }}></input> : <div className='w-full mx-2' onClick={()=>setListDataNo(i)}>{data[0]}</div>
+                            }
+                            <div className="">
+                                {
+                                    (i==updateDataNo) ? (<MdDone className='h-5 w-5 hover:cursor-pointer' onClick={
+                                        ()=>updateListName(data[0])
+                                    }/>) : (<MdModeEdit className='h-5 w-5 hover:cursor-pointer' onClick={()=>{
+                                        if (updateDataNo == -1){
+                                            setUpdateDataNo(i);
+                                            setUpdatedValue(data[0]);
+                                        }
+                                    }}/>)
+                                }
+                            </div>
                         </div>)
                     )}
                 </div>

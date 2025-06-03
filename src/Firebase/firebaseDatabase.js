@@ -98,6 +98,25 @@ class FirebaseDatabase{
         }
     }
 
+    async updateListName(oldListName, newListName){
+        const user = await firebaseAuth.getCurrentUser();
+        try{
+            const oldRef = ref(this.database, `${user.uid}/${oldListName}`);
+            const newRef = ref(this.database, `${user.uid}/${newListName}`);
+
+            const snapshot = await get(oldRef);
+            if (snapshot.exists()){
+                const data = snapshot.val();
+                await set(newRef, data);
+                await remove(oldRef);
+            } else {
+                throw Error("List does not exist");
+            }
+        } catch (error){
+            throw Error("Couldn't update list name!");
+        }
+    }
+
 }
 
 const firebaseDatabase = new FirebaseDatabase();
