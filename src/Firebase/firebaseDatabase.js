@@ -117,6 +117,18 @@ class FirebaseDatabase{
         }
     }
 
+    async updateListItems(itemId, listName, updatedFields){
+        const user = await firebaseAuth.getCurrentUser();
+        try{
+            set(
+                ref(this.database, `${user.uid}/${listName}/Data/${itemId}`),
+                updatedFields
+            )
+        } catch (error){
+            throw Error("Couldn't update list items.")
+        }
+    }
+
 }
 
 const firebaseDatabase = new FirebaseDatabase();

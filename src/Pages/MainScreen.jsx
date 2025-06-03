@@ -42,10 +42,16 @@ function MainScreen() {
     }
 
     function deleteListToggle(i){
+
+        if (updateDataNo != -1){
+            throw Error("Update the field first.");
+        }
+
         const updatedDeleteList = [...deleteList];
         updatedDeleteList[i] = !updatedDeleteList[i];
         setDeleteList(updatedDeleteList);
         setShowDeleteButton(updatedDeleteList.some((x)=>x===true));
+
     }
 
     async function deleteSelectedLists(){
@@ -112,7 +118,7 @@ function MainScreen() {
     <div className='flex flex-col h-screen w-screen'>
 
         {/* Navbar */}
-        <nav className='bg-blue-600'>
+        <nav className='bg-green-200'>
             <div className='flex h-15 w-full px-10 items-center justify-between p-1'>
                 {/* Logo of the website */}
                 <div className='h-full'>
